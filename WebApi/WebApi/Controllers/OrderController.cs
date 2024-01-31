@@ -1,104 +1,75 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using WebApi.Models;
+using WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApi.Models;
 
-[ApiController]
-[Route("[controller]")]
-public class OrderController : ControllerBase
+namespace WebApi.Controllers
 {
-    private readonly Context _context;
-
-    public OrderController(Context context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class OrderController : ControllerBase
     {
-        _context = context;
-    }
 
-    // GET alles von api/Order
-    [HttpGet]
-    [Authorize]
-    public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
-    {
-        var orders = await _context.Orders.ToListAsync();
+        private readonly OrderService _orderService;
 
-        if (orders == null || orders.Count == 0)
+        public OrderController(OrderService orderService) =>
+        _orderService = orderService;
+
+        [HttpGet]
+        public async Task<List<Order>> Get() =>
+        await _orderService.GetAsync();
+
+        [HttpGet("{id:length(24)}")]
+        public async Task<ActionResult<Order>> Get(string id)
         {
-            return NotFound();
-        }
-        return orders;
-    }
+            var order = await _orderService.GetAsync(id);
 
-    // GET by id von api/Order/id
-    [HttpGet("{id}")]
-    [Authorize]
-    public async Task<ActionResult<Order>> GetOrderById(int id)
-    {
-        var order = await _context.Orders.FindAsync(id);
-
-        if (order == null)
-        {
-            return NotFound();
-        }
-
-        return order;
-    }
-
-    // POST nach api/Order
-    [HttpPost]
-    [AllowAnonymous]
-    public async Task<ActionResult<Order>> PostOrder(Order order)
-    {
-        order.CreateDate = DateTime.UtcNow;
-
-        _context.Orders.Add(order);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetAllOrders), new { id = order.OrderID }, order);
-    }
-
-    // PUT nach api/Order/id
-    [HttpPut("{id}")]
-    [Authorize]
-    public IActionResult PutOrder(int id, Order Order)
-    {
-        if (id != Order.OrderID)
-        {
-            return BadRequest();
-        }
-        _context.Entry(Order).State = EntityState.Modified;
-        try
-        {
-            _context.SaveChanges();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!OrderExists(id))
+            if (order is null)
             {
                 return NotFound();
             }
-            else
-                throw;
+
+            return order;
         }
-        return NoContent();
-    }
 
-    private bool OrderExists(int id)
-    {
-        return _context.Orders.Any(e => e.OrderID == id);
-    }
-
-    // DELETE aus api/Order/id
-    [HttpDelete("{id}")]
-    [Authorize]
-    public IActionResult DeleteSOrder(int id)
-    {
-        var Order = _context.Orders.Find(id);
-        if (Order == null)
+        [HttpPost]
+        public async Task<IActionResult> Post(Order newOrder)
         {
-            return NotFound();
+            await _orderService.CreateAsync(newOrder);
+
+            return CreatedAtAction(nameof(Get), new { id = newOrder.OrderID }, newOrder);
         }
-        _context.Orders.Remove(Order);
-        _context.SaveChanges();
-        return NoContent();
+
+        [HttpPut("{id:length(24)}")]
+        public async Task<IActionResult> Update(string id, Order updatedOrder)
+        {
+            var order = await _orderService.GetAsync(id);
+
+            if (order is null)
+            {
+                return NotFound();
+            }
+
+            updatedOrder.OrderID = order.OrderID;
+
+            await _orderService.UpdateAsync(id, updatedOrder);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var order = await _orderService.GetAsync(id);
+
+            if (order is null)
+            {
+                return NotFound();
+            }
+
+            await _orderService.RemoveAsync(id);
+
+            return NoContent();
+        }
+
     }
 }

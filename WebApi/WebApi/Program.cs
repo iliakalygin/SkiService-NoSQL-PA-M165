@@ -1,101 +1,43 @@
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.OpenApi.Models;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.IdentityModel.Tokens;
-    using System.Text;
-    using WebApi.Services;
 
-    var builder = WebApplication.CreateBuilder(args);
+using WebApi.Models;
+using WebApi.Services;
 
-    // Add the Token Service for JWT token generation
-    builder.Services.AddScoped<ITokenService, TokenService>();
-
-    // Add services to the container.
-    builder.Services.AddControllers();
-
-    // CORS fixer
-    builder.Services.AddCors(options =>
+namespace WebApi
+{
+    public class Program
     {
-        options.AddDefaultPolicy(
-            policy =>
-            {
-                policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-            });
-    });
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-    // Hinzufügen von Diensten zum Container.
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ski Service Management API", Version = "v1" });
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT"
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
+            // Add services to the container.
+            builder.Services.Configure<SkiServiceManagementDatabaseSettings>(
+                builder.Configuration.GetSection("SkiServiceManagementDatabase"));
+
+            builder.Services.AddSingleton<OrderService>();
+
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
             {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                Array.Empty<string>()
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
-        });
-    });
 
-    // Registrieren Sie Ihren DbContext hier
-    builder.Services.AddDbContext<Context>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
 
 
+            app.MapControllers();
 
-    // JWT Authentication
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidateIssuer = true,
-                ValidateAudience = true
-            };
-        });
-
-
-    var app = builder.Build();
-
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JWT v1"));
+            app.Run();
+        }
     }
-
-    app.UseHttpsRedirection();
-
-    // CORS fixer
-    app.UseCors();
-
-    // Authentication & Authorization
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    app.MapControllers();
-
-    app.Run();
+}

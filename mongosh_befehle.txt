@@ -1,0 +1,12 @@
+
+-- Datenbank erstellen
+use SkiServiceManagement;
+
+-- Collection Orders erstellen
+db.createCollection('Orders')
+
+-- Test Datenfeld einfügen
+db.Orders.insertMany([{"CustomerName": "Arda Basel-Stadt", "CustomerEmail": "arda@baselstadt.com", "CustomerPhone": "123321", "Priority": "High", "ServiceType": "Fell zuschneiden", "CreateDate": "2024-01-20", "PickupDate": "2024-01-30", "Status": "Offen", "Comment": "BS"}]);
+
+-- Alle Datensätze in der Shell ausgeben
+db.Orders.find()

@@ -1,8 +1,16 @@
-﻿namespace WebApi.Models
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace WebApi.Models
+
 {
     public class Order
     {
-        public int OrderID { get; set; }
+
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? OrderID { get; set; }
+
         public string? CustomerName { get; set; }
         public string? CustomerEmail { get; set; }
         public string? CustomerPhone { get; set; }
@@ -12,5 +20,8 @@
         public DateTime PickupDate { get; set; }
         public string Status { get; set; } = "Offen";
         public string Comment { get; set; } = "";
+
+
+
     }
 }
