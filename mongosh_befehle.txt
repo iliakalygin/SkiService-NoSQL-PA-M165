@@ -3,10 +3,151 @@
 use SkiServiceManagement;
 
 -- Collection Orders erstellen
-db.createCollection('Orders')
+db.createCollection("Orders", {
+  validator: {
+    $jsonSchema: {
+      "bsonType": "object",
+      "required": [
+        "CustomerName",
+        "CustomerEmail",
+        "CustomerPhone",
+        "Priority",
+        "ServiceType",
+        "CreateDate",
+        "PickupDate",
+        "Status",
+        "Comment"
+      ],
+      "properties": {
+        "_id": {
+          "bsonType": "objectId"
+        },
+        "CustomerName": {
+          "bsonType": "string"
+        },
+        "CustomerEmail": {
+          "bsonType": "string"
+        },
+        "CustomerPhone": {
+          "bsonType": "string"
+        },
+        "Priority": {
+          "bsonType": "string"
+        },
+        "ServiceType": {
+          "bsonType": "string"
+        },
+        "CreateDate": {
+          "bsonType": "date"
+        },
+        "PickupDate": {
+          "bsonType": "date"
+        },
+        "Status": {
+          "bsonType": "string"
+        },
+        "Comment": {
+          "bsonType": "string",
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  validationLevel: "strict",
+  validationAction: "error"
+});
 
--- Test Datenfeld einfügen
-db.Orders.insertMany([{"CustomerName": "Arda Basel-Stadt", "CustomerEmail": "arda@baselstadt.com", "CustomerPhone": "123321", "Priority": "High", "ServiceType": "Fell zuschneiden", "CreateDate": "2024-01-20", "PickupDate": "2024-01-30", "Status": "Offen", "Comment": "BS"}]);
+-- Als eine Zeile
+db.createCollection("Orders",{validator:{$jsonSchema:{"bsonType":"object","required":["CustomerName","CustomerEmail","CustomerPhone","Priority","ServiceType","CreateDate","PickupDate","Status","Comment"],"properties":{"_id":{"bsonType":"objectId",},"CustomerName":{"bsonType":"string",},"CustomerEmail":{"bsonType":"string",},"CustomerPhone":{"bsonType":"string",},"Priority":{"bsonType":"string",},"ServiceType":{"bsonType":"string",},"CreateDate":{"bsonType":"date",},"PickupDate":{"bsonType":"date",},"Status":{"bsonType":"string",},"Comment":{"bsonType":"string",}},"additionalProperties":false}},validationLevel:"strict",validationAction:"error"});
+
+
+-- Collection Employees erstellen
+db.createCollection("Employees", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["Username", "Password"],
+      properties: {
+        _id: {
+          bsonType: "objectId"
+        },
+        Username: {
+          bsonType: "string",
+          maxLength: 50
+        },
+        Password: {
+          bsonType: "string",
+          maxLength: 50
+        }
+      },
+      additionalProperties: false
+    }
+  },
+  validationLevel: "strict",
+  validationAction: "error"
+});
+
+
+-- Als eine Zeile
+db.createCollection("Employees",{validator:{$jsonSchema:{bsonType:"object",required:["Username","Password"],properties:{_id:{bsonType:"objectId"},Username:{bsonType:"string",maxLength:50},Password:{bsonType:"string",maxLength:50}},additionalProperties:false}},validationLevel:"strict",validationAction:"error"});
+
+
+-- Test Datenfeld in Employees einfügen
+db.Employees.insertMany([
+  { "Username": "admin", "Password": "admin" },
+  { "Username": "julia.meier", "Password": "Julia2024!" },
+  { "Username": "max.klein", "Password": "MaxGeheim#23" },
+  { "Username": "sara.schmidt", "Password": "Sara$Pass88" },
+  { "Username": "lukas.gruber", "Password": "Lukas_456" },
+  { "Username": "emma.ziegler", "Password": "EmmaZ2024" },
+  { "Username": "leo.hofmann", "Password": "Leo12345" },
+  { "Username": "mia.wagner", "Password": "Mia#Secure!9" },
+  { "Username": "felix.weber", "Password": "Felix$2024" },
+  { "Username": "lena.schulz", "Password": "LenaPasswort!" },
+  { "Username": "niklas.fischer", "Password": "Niklas1234" }
+]);
+
+-- Als eine Zeile
+db.Employees.insertMany([{"Username":"admin","Password":"admin"},{"Username":"julia.meier","Password":"Julia2024!"},{"Username":"max.klein","Password":"MaxGeheim#23"},{"Username":"sara.schmidt","Password":"Sara$Pass88"},{"Username":"lukas.gruber","Password":"Lukas_456"},{"Username":"emma.ziegler","Password":"EmmaZ2024"},{"Username":"leo.hofmann","Password":"Leo12345"},{"Username":"mia.wagner","Password":"Mia#Secure!9"},{"Username":"felix.weber","Password":"Felix$2024"},{"Username":"lena.schulz","Password":"LenaPasswort!"},{"Username":"niklas.fischer","Password":"Niklas1234"}]);
+
+
+
+-- Test Datenfeld in Orders einfügen
+db.Orders.insertMany([
+  {
+    "CustomerName": "Arda Basel-Stadt",
+    "CustomerEmail": "arda@baselstadt.com",
+    "CustomerPhone": "123321",
+    "Priority": "High",
+    "ServiceType": "Fell zuschneiden",
+    "CreateDate": ISODate("2024-01-20"),
+    "PickupDate": ISODate("2024-01-30"),
+    "Status": "Offen",
+    "Comment": "BS"
+  },
+  {
+    "CustomerName": "Aimo Altorfer",
+    "CustomerEmail": "aimo@ibz.ch",
+    "CustomerPhone": "987654",
+    "Priority": "High",
+    "ServiceType": "Heisswachsen",
+    "CreateDate": ISODate("2024-01-22"),
+    "PickupDate": ISODate("2024-01-31"),
+    "Status": "Offen",
+    "Comment": "Brawlhalla"
+  }
+]);
+
+-- Als eine Zeile
+db.Orders.insertMany([{"CustomerName":"ArdaBasel-Stadt","CustomerEmail":"arda@baselstadt.com","CustomerPhone":"123321","Priority":"High","ServiceType":"Fellzuschneiden","CreateDate":ISODate("2024-01-20"),"PickupDate":ISODate("2024-01-30"),"Status":"Offen","Comment":"BS"},{"CustomerName":"AimoAltorfer","CustomerEmail":"aimo@ibz.ch","CustomerPhone":"987654","Priority":"High","ServiceType":"Heisswachsen","CreateDate":ISODate("2024-01-22"),"PickupDate":ISODate("2024-01-31"),"Status":"Offen","Comment":"Brawlhalla"}]);db.Orders.insertMany([{"CustomerName":"ArdaBasel-Stadt","CustomerEmail":"arda@baselstadt.com","CustomerPhone":"123321","Priority":"High","ServiceType":"Fellzuschneiden","CreateDate":ISODate("2024-01-20"),"PickupDate":ISODate("2024-01-30"),"Status":"Offen","Comment":"BS"},{"CustomerName":"AimoAltorfer","CustomerEmail":"aimo@ibz.ch","CustomerPhone":"987654","Priority":"High","ServiceType":"Heisswachsen","CreateDate":ISODate("2024-01-22"),"PickupDate":ISODate("2024-01-31"),"Status":"Offen","Comment":"Brawlhalla"}]);
+
+
+
+-- Indexe hinzufügen
+db.Orders.createIndex({CustomerName: 1})
+db.Employees.createIndex({Username: 1})
+
+
 
 -- Alle Datensätze in der Shell ausgeben
 db.Orders.find()

@@ -21,7 +21,5 @@ namespace WebApi.Models
         public string Status { get; set; } = "Offen";
         public string Comment { get; set; } = "";
 
-
-
     }
 }
