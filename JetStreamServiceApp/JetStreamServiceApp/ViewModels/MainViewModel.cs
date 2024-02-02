@@ -11,7 +11,7 @@ namespace JetStreamServiceApp.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<Order> _orderList = new ObservableCollection<Order>();
-        private int _resourceId;
+        private string _resourceId;
 
         public RelayCommand LoadCommand { get; set; }
         public RelayCommand LoadResourceByIdCommand { get; set; }
@@ -26,7 +26,7 @@ namespace JetStreamServiceApp.ViewModels
             set => SetProperty(ref _orderList, value);
         }
 
-        public int ResourceId
+        public string ResourceId
         {
             get => _resourceId;
             set => SetProperty(ref _resourceId, value);
@@ -46,8 +46,8 @@ namespace JetStreamServiceApp.ViewModels
         public MainViewModel()
         {
             LoadCommand = new RelayCommand(async param => await Execute_LoadAsync(), param => true);
-            LoadResourceByIdCommand = new RelayCommand(async param => await Execute_LoadResourceByIdAsync(), param => ResourceId > 0);
-            DeleteCommand = new RelayCommand(async param => await Execute_DeleteAsync(), param => ResourceId > 0);
+            LoadResourceByIdCommand = new RelayCommand(async param => await Execute_LoadResourceByIdAsync(), param => ResourceId != null);
+            DeleteCommand = new RelayCommand(async param => await Execute_DeleteAsync(), param => ResourceId != null);
             UpdateCommand = new RelayCommand(async param => await Execute_UpdateAsync(), param => SelectedOrder != null);
 
             // Führen Sie LoadCommand direkt beim Starten des Fensters aus
@@ -57,7 +57,7 @@ namespace JetStreamServiceApp.ViewModels
 
         private async Task Execute_DeleteAsync()
         {
-            if (ResourceId <= 0) return;
+            if (ResourceId == null) return;
 
             // Benutzer um Bestätigung bitten
             MessageBoxResult result = MessageBox.Show("Möchten Sie diesen Eintrag wirklich löschen?", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -67,7 +67,7 @@ namespace JetStreamServiceApp.ViewModels
                 try
                 {
                     // Führen Sie den DELETE-Request durch
-                    await Api.DeleteResourceById("http://localhost:5241/Order", ResourceId);
+                    await Api.DeleteResourceById("http://localhost:5093/api/Order", ResourceId);
 
                     // Aktualisieren Sie die Anzeige nach erfolgreichem Löschen
                     await Execute_LoadAsync();
@@ -100,8 +100,8 @@ namespace JetStreamServiceApp.ViewModels
 
         private async Task Execute_LoadResourceByIdAsync()
         {
-            if (ResourceId <= 0) return;
-            var order = await Api.GetResourceById("http://localhost:5241/Order", ResourceId);
+            if (ResourceId == null) return;
+            var order = await Api.GetResourceById("http://localhost:5093/api/Order", ResourceId);
             if (order != null)
             {
                 SelectedOrder = order;
@@ -116,7 +116,7 @@ namespace JetStreamServiceApp.ViewModels
             try
             {
                 // Führen Sie den PUT-Request durch
-                await Api.UpdateResourceById("http://localhost:5241/Order", SelectedOrder.OrderID, SelectedOrder);
+                await Api.UpdateResourceById("http://localhost:5093/api/Order", SelectedOrder.OrderID, SelectedOrder);
 
                 // Aktualisieren Sie die Anzeige nach erfolgreichem Aktualisieren
                 await Execute_LoadAsync();

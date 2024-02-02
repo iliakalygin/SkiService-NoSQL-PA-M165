@@ -3,17 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Admin Panel" Height="1000" Width="1500"
         xmlns:vm="clr-namespace:JetStreamServiceApp.ViewModels"
-        WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" KeyDown="Window_KeyDown">
+        WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
 
-    <Window.InputBindings>
-        <KeyBinding Key="Enter" Command="{Binding Path=LoginCommand}" />
-    </Window.InputBindings>
 
     <Grid>
-        <Grid x:Name="GridMain" Visibility="Hidden">
+        <Grid x:Name="GridMain" Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -42,7 +39,7 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1" CornerRadius="5">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
@@ -130,38 +127,7 @@
         </Grid>
 
 
-        <Grid x:Name="GridLogin" Visibility="Visible">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0.5*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Margin="10" Grid.Row="1" Grid.Column="1">
-                <TextBlock Text="Username:" VerticalAlignment="Center" FontSize="18"/>
-                <TextBox x:Name="textBoxUsername" Margin="5"  FontSize="18"/>
-
-                <TextBlock Text="Password:" VerticalAlignment="Center" FontSize="18"/>
-                <PasswordBox x:Name="passwordBoxPassword" Margin="5" FontSize="18"/>
-
-                <Button Content="Login" Command="{Binding Path=LoginCommand}" Click="Login_Click" Height="40" Width="120" Background="#007bff" Foreground="White" Margin="0,20,10,0" FontSize="20">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1" CornerRadius="5">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-            </StackPanel>
-
-        </Grid>
+      
 
     </Grid>
 </Window>

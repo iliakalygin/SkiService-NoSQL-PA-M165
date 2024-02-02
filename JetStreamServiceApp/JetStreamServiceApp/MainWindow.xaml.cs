@@ -29,7 +29,7 @@ namespace JetStreamServiceApp
                 Order selectedOrder = (ordersDataGrid.SelectedItem as Order);
 
                 // Assuming Order class has a property named OrderID*
-                int selectedID = selectedOrder.OrderID;
+                string selectedID = selectedOrder.OrderID;
 
                 // Update the label content
                 textBoxID.Text = $"{selectedID}";
@@ -46,43 +46,6 @@ namespace JetStreamServiceApp
         {
             GridMain.Visibility = Visibility.Visible;
             GridEdit.Visibility = Visibility.Hidden;
-        }
-
-        // LoginGrid----------------------------------------------------------
-
-        private MainViewModel MainViewModel => DataContext as MainViewModel;
-
-        private async void Login_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Call the login API to get the JWT token
-                string token = await Api.LoginAsync(textBoxUsername.Text, passwordBoxPassword.Password);
-
-                // Store or manage the token securely (e.g., in a secure storage or memory)
-                // For simplicity, we set it in the HttpClient headers for future requests.
-                Api.SetJwtToken(token);
-
-                // Set the visibility of the Grids
-                GridMain.Visibility = Visibility.Visible;
-                GridLogin.Visibility = Visibility.Hidden;
-
-                // Load the data
-                MainViewModel?.LoadCommand.Execute(null);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Login failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Login_Click(this, new RoutedEventArgs());
-            }
         }
 
     }

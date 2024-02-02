@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BFDyIsAPkIJpFlkVSSyKs+uUHkKzUMa7/Fyv1Z3M2huHuSUjp7O+ze+k/jG+8d3X6oj9pBGaTcDAj7FaIWFsXg==",
+  "dgSpecHash": "xqnkVMqKp+ZW02aIv99ie/IEnh3odI3jA6OMqvtgkSP6e/m3Oy88tYCt4Haul744e9VIK67Rq1MLRO5F9Nc93g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Ilia Kalygin\\Desktop\\WebApi\\WebApi\\WebApi.csproj",
+  "projectFilePath": "C:\\Users\\Ilia Kalygin\\Documents\\GitHub\\PA-M322\\SkiService-NoSQL-PA-M165\\WebApi\\WebApi\\WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Ilia Kalygin\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\Ilia Kalygin\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",
